@@ -96,7 +96,7 @@ controller.hears(['!reg (.*)', '.reg (.*)', '!register (.*)', '.register (.*)'],
                 if(err){
                     bot.reply(message, 'An error occured...Please try again later');
                 } else {
-                    bot.reply(message,'@' + usernick + ': Your GitHub account of ' + newGithub + ' has been saved.');
+                    bot.reply(message,'@' + usernick + ': Your GitHub account of ' + newGithub + ' has been updated.');
                 }
             });
         }
