@@ -36,7 +36,7 @@ var bot = controller.spawn({
 }).startRTM();
 
 
-controller.hears(['!reg (.*)', '.reg (.*)', '!register (.*)', '.register (.*)'], 'direct_message,ambient', function(bot, message) {
+controller.hears(['!reg (.*)', '.reg (.*)', '!register (.*)', '.register (.*)'], 'direct_message', function(bot, message) {
     //Get usernick
     var usernick = "";
     for (i in bot.users) {
@@ -97,7 +97,7 @@ controller.hears(['!reg (.*)', '.reg (.*)', '!register (.*)', '.register (.*)'],
     });
 });
 
-controller.hears(['!gen', '.gen', '!generate', '.generate'], 'direct_message,ambient', function(bot, message) {
+controller.hears(['!gen', '.gen', '!generate', '.generate'], 'direct_message', function(bot, message) {
     //Get usernick
     var usernick = "";
     for (i in bot.users) {
