@@ -298,7 +298,7 @@ controller.hears(['~info'],
                     for (i in allUsers){
                         messageStr += "User Index: " + i + ", GitHub: " + allUsers[i].github + ", Current Ref Num: " + allUsers[i].refNum + "\n";
                     }
-                    bot.reply(message, str);
+                    bot.reply(message, messageStr);
                 }
         });
     });
