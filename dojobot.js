@@ -283,17 +283,24 @@ controller.hears(['shutdown'], 'direct_message', function(bot, message) {
     });
 });
 
-
-controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your name'],
-    'direct_message,direct_mention,mention', function(bot, message) {
-
+//Gets some basic bot info
+controller.hears(['~info'],
+    'direct_message,direct_mention', function(bot, message) {
+        var User = mongoose.model('User');
         var hostname = os.hostname();
         var uptime = formatUptime(process.uptime());
+        var messageStr = ':robot_face: I am a bot named <@' + bot.identity.name +
+             '>. I have been running for ' + uptime + ' on ' + hostname + '.\n';
 
-        bot.reply(message,
-            ':robot_face: I am a bot named <@' + bot.identity.name +
-             '>. I have been running for ' + uptime + ' on ' + hostname + '.');
-
+        User.find({}, function(err, allUsers){
+                if(!err){
+                    messageStr += "\n=====Current DB Info=====\n";
+                    for (i in allUsers){
+                        messageStr += "User Index: " + i + ", GitHub: " + allUsers[i].github + ", Current Ref Num: " + allUsers[i].refNum + "\n";
+                    }
+                    bot.reply(message, str);
+                }
+        });
     });
 
 function formatUptime(uptime) {
