@@ -58,38 +58,32 @@ controller.hears(['!reg (.*)', '.reg (.*)', '!register (.*)', '.register (.*)'],
                 if(!findAllErr){
                     //update each user's reference number
                     //shift all reference numbers over by one starting from whatever is referencing the 0 index currently
-                    startIdx = 0;
-                    for (var i in allUsers) {
-                        if(allUsers[i].refNum == 0) {
-                            startIdx = i;
+                    var limit = allUsers[0].refNum - 1;
+                    for(var x = 0; x < allUsers.length; x++){
+                        if(allUsers[x].refNum <= limit){
+                            var newNum = (allUsers[0].refNum - 1) % (allUsers.length + 1);
+                            User.update({user: allUsers[x].user}, {refNum: newNum}, function(singleUpdateErr){
+                                if(singleUpdateErr) {
+                                    console.log("Failed to update " + allUsers[x].user);
+                                    console.log(singleUpdateErr);
+                                    return; //break registration function if error
+                                }
+                            });
                         }
                     }
-                    for(var x = startIdx; x < allUsers.length; x++){
-                        var newNum = allUsers[x].refNum - 1;
-                        if (x == startIdx){
-                            newNum = allUsers.length;
+                    //create and save new user now
+                    var user = new User({user: message.user, github: newGithub, refNum: limit});
+                    user.save(function(err) {
+                        if(err) {
+                            console.log("User could not be saved!");
+                            bot.reply(message, 'An error occured...Please try again later');
+                        } else {
+                            console.log("New user added~");
+                            bot.reply(message,'@' + usernick + ': Your GitHub account of ' + newGithub + ' has been saved.');
                         }
-                        User.update({user: allUsers[x].user}, {refNum: newNum}, function(singleUpdateErr){
-                            if(singleUpdateErr) {
-                                console.log("Failed to update " + allUsers[x].user);
-                                console.log(singleUpdateErr);
-                            }
-                        });
-                    }
+                    })
                 }
             });
-
-            //create and save new user now
-            var user = new User({user: message.user, github: newGithub, refNum: 0});
-            user.save(function(err) {
-                if(err) {
-                    console.log("User could not be saved!");
-                    bot.reply(message, 'An error occured...Please try again later');
-                } else {
-                    console.log("New user added~");
-                    bot.reply(message,'@' + usernick + ': Your GitHub account of ' + newGithub + ' has been saved.');
-                }
-            })
         } else {
             User.update({user:message.user}, {github: newGithub}, function(err){
                 // This code will run when the DB has attempted to update the matching record.
